@@ -1,0 +1,42 @@
+import { prisma } from '../lib/prisma';
+import bcrypt from 'bcryptjs';
+
+type CreateUserProps = {
+    name: string
+    email: string
+    password: string
+}
+
+type VerifyUserProps = {
+    email: string
+    password: string
+}
+
+export const createUser = async ({ name, email, password }: CreateUserProps) => {
+    email = email.toLowerCase();
+    const user = await prisma.user.findFirst({
+        where: { email }
+    });
+    if (user) return false
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    return await prisma.user.create({
+        data: {
+            name,
+            email,
+            password: hashedPassword
+        }
+    });
+}
+
+export const verifyUser = async ({ email, password }: VerifyUserProps) => {
+    email = email.toLowerCase();
+    const user = await prisma.user.findFirst({
+        where: { email }
+    });
+    if (!user) return false
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return false
+
+    return user
+}
