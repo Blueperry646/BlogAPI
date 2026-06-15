@@ -14,7 +14,7 @@
     "prisma",
     "node"
   ],
-  "author": "Yan da Mata Penteado ",
+  "author": "Yan da Mata Penteado",
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
